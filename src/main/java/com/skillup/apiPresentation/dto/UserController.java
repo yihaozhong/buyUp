@@ -9,10 +9,9 @@ import com.skillup.domain.user.UserService;
 import com.skillup.infrastructure.jooq.tables.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -34,10 +33,40 @@ public class UserController {
                     .msg(String.format(SkillUpCommon.USER_EXISTS, userInDto.getUserName()))
                     .result(null).build());
         }
-
-
-
     }
+
+    @GetMapping("/account/id/{id}")
+    public ResponseEntity<SkillUpResponse> readAccountById(@PathVariable("id") String accountId){
+        UserDomain userDomain = userService.readAccountById(accountId);
+        // TODO: handle userDomain is null
+        if (Objects.isNull(userDomain)){
+            return ResponseEntity.status(SkillUpCommon.BAD_REQUEST).body(
+                    SkillUpResponse.builder()
+                            .msg(String.format(SkillUpCommon.USER_ID_WRONG, accountId))
+                            .result(null).build()
+            );
+        }
+        return ResponseEntity.status(SkillUpCommon.SUCCESS).body(
+                SkillUpResponse.builder()
+                        .result(toOutDto(userDomain)).build());
+    }
+
+    @GetMapping("/account/name/{name}")
+    public ResponseEntity<SkillUpResponse> readAccountByName(@PathVariable("name") String accountName){
+        UserDomain userDomain = userService.readAccountByName(accountName);
+        // TODO: handle userDomain is null
+        if (Objects.isNull(userDomain)){
+            return ResponseEntity.status(SkillUpCommon.BAD_REQUEST).body(
+                    SkillUpResponse.builder()
+                            .msg(String.format(SkillUpCommon.USER_NAME_WRONG, accountName))
+                            .result(null).build()
+            );
+        }
+        return ResponseEntity.status(SkillUpCommon.SUCCESS).body(
+                SkillUpResponse.builder()
+                        .result(toOutDto(userDomain)).build());
+    }
+
 
     private UserDomain toDomain(UserInDto userInDto){
         return UserDomain.builder()
