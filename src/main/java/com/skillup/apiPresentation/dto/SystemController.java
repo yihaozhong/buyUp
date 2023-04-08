@@ -1,4 +1,4 @@
-package com.skillup.api;
+package com.skillup.apiPresentation.dto;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
