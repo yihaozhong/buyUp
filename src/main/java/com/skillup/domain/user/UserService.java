@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
     @Autowired
     UserRepository userRepository;
-    public UserDomain createUser(UserDomain userDomain){
+    public UserDomain createUser(UserDomain userDomain) throws Exception {
         // insert to database
+
         userRepository.createUser(userDomain);
         // return the result
         return userDomain;

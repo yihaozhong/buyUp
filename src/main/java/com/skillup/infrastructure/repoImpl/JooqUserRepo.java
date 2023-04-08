@@ -16,8 +16,13 @@ public class JooqUserRepo implements UserRepository {
     // public static final User USER_T = new User();
 
     @Override
-    public void createUser(UserDomain userDomain){
-        dslContext.executeInsert(toRecord(userDomain));
+    public void createUser(UserDomain userDomain) {
+        try {
+            dslContext.executeInsert(toRecord(userDomain));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            throw e;
+        }
     }
 
     private UserRecord toRecord(UserDomain userDomain){

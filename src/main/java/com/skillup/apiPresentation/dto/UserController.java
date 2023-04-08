@@ -2,10 +2,13 @@ package com.skillup.apiPresentation.dto;
 
 import com.skillup.apiPresentation.dto.in.UserInDto;
 import com.skillup.apiPresentation.dto.out.UserOutDto;
+import com.skillup.apiPresentation.util.SkillUpCommon;
+import com.skillup.apiPresentation.util.SkillUpResponse;
 import com.skillup.domain.user.UserDomain;
 import com.skillup.domain.user.UserService;
 import com.skillup.infrastructure.jooq.tables.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,12 +20,23 @@ public class UserController {
     @Autowired
     UserService userService;
     @PostMapping("/account")
-    public UserOutDto createUser(@RequestBody UserInDto userInDto){
+    public ResponseEntity<SkillUpResponse> createUser(@RequestBody UserInDto userInDto){
+
+        UserDomain userDomain;
         // insert data into data table
+        try{
+            userDomain = userService.createUser(toDomain(userInDto));
+            return ResponseEntity.status(SkillUpCommon.SUCCESS).body(SkillUpResponse.builder()
+                    .msg(null)
+                    .result(toOutDto(userDomain)).build());
+        } catch (Exception e){
+            return ResponseEntity.status(SkillUpCommon.BAD_REQUEST).body(SkillUpResponse.builder()
+                    .msg(String.format(SkillUpCommon.USER_EXISTS, userInDto.getUserName()))
+                    .result(null).build());
+        }
 
-        UserDomain userDomain = userService.createUser(toDomain(userInDto));
 
-        return toOutDto(userDomain);
+
     }
 
     private UserDomain toDomain(UserInDto userInDto){
