@@ -45,7 +45,12 @@ public class JooqUserRepo implements UserRepository {
 
     @Override
     public void updateUser(UserDomain userDomain) {
-
+        try {
+            dslContext.executeUpdate(toRecord(userDomain));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            throw e;
+        }
     }
 
     private UserRecord toRecord(UserDomain userDomain){

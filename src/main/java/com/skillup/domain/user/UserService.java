@@ -26,4 +26,10 @@ public class UserService {
         // return userDomain or null
         return userRepository.readUserByName(userName);
     }
+
+    public UserDomain updateUser(UserDomain userDomain){
+        // return userDomain or null
+        userRepository.updateUser(userDomain);
+        return userDomain;
+    }
 }
