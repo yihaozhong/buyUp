@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/promotion")
@@ -29,6 +31,28 @@ public class PromotionController {
             return ResponseEntity.status(SkillUpCommon.INTERNAL_ERROR).body(null);
         }
         return ResponseEntity.status(SkillUpCommon.SUCCESS).body(toOutDto(promotionDomain));
+    }
+
+    @GetMapping("/status/{status}")
+    public List<PromotionOutDto> getByStatus(@PathVariable("status") Integer status){
+        List<PromotionDomain> promotionDomainList = promotionService.getPromotionByStatus(status);
+        return promotionDomainList.stream().map(this::toOutDto).collect(Collectors.toList());
+    }
+
+    @PostMapping ("/lock/id/{id}")
+    public ResponseEntity<Boolean> lockPromotionStock(@PathVariable("id") String id){
+        // 1. check promotion exist
+        PromotionDomain promotionDomain = promotionService.getPromotionById(id);
+        if(Objects.isNull(promotionDomain)){
+            return ResponseEntity.status(SkillUpCommon.BAD_REQUEST).body(false);
+        }
+        // 2. try to lock stock
+        boolean isLocked = promotionService.lockStock(id);
+        if (isLocked){
+            return ResponseEntity.status(SkillUpCommon.SUCCESS).body(true);
+        }
+        return ResponseEntity.status(SkillUpCommon.SUCCESS).body(false);
+
     }
 
     private PromotionDomain toDomain(PromotionInDto inDto){

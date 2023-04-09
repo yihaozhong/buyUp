@@ -8,6 +8,8 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class JooqPromotionRepo implements PromotionRepository {
 
@@ -24,6 +26,23 @@ public class JooqPromotionRepo implements PromotionRepository {
     public PromotionDomain getPromotionById(String id) {
         return dslContext.selectFrom(P_T).where(P_T.PROMOTION_ID.eq(id)).fetchOptional(this:: toDomain).orElse(null);
     }
+
+    @Override
+    public List<PromotionDomain> getPromotionByStatus(Integer status) {
+        return dslContext.selectFrom(P_T).where(P_T.STATUS.eq(status)).fetch(this:: toDomain);
+    }
+
+    @Override
+    public boolean lockStock(String id){
+        // database level: lockStock = get value, set value - 1
+        return false;
+    }
+
+    @Override
+    public void updatePromotion(PromotionDomain promotionDomain) {
+        dslContext.executeUpdate(toRecord(promotionDomain));
+    }
+
 
     private PromotionRecord toRecord(PromotionDomain domain){
         PromotionRecord promotionRecord = new PromotionRecord();
