@@ -8,6 +8,9 @@ spring:
     username: root
     password: rootroot
 
-flyway:
-  baseline-on-migrate: true
-  enabled: true
+  flyway:
+    baseline-on-migrate: false
+    enabled: true
+    ignore-migration-patterns:
+      - "*:missing"
+    outOfOrder: true

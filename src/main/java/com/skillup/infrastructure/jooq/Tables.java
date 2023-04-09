@@ -4,6 +4,8 @@
 package com.skillup.infrastructure.jooq;
 
 
+import com.skillup.infrastructure.jooq.tables.Commodity;
+import com.skillup.infrastructure.jooq.tables.Promotion;
 import com.skillup.infrastructure.jooq.tables.User;
 
 
@@ -12,6 +14,16 @@ import com.skillup.infrastructure.jooq.tables.User;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>skillup.commodity</code>.
+     */
+    public static final Commodity COMMODITY = Commodity.COMMODITY;
+
+    /**
+     * The table <code>skillup.promotion</code>.
+     */
+    public static final Promotion PROMOTION = Promotion.PROMOTION;
 
     /**
      * The table <code>skillup.user</code>.
