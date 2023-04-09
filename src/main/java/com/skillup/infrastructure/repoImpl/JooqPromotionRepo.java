@@ -32,11 +32,11 @@ public class JooqPromotionRepo implements PromotionRepository {
         return dslContext.selectFrom(P_T).where(P_T.STATUS.eq(status)).fetch(this:: toDomain);
     }
 
-    @Override
-    public boolean lockStock(String id){
-        // database level: lockStock = get value, set value - 1
-        return false;
-    }
+//    @Override
+//    public boolean lockStock(String id){
+//        // database level: lockStock = get value, set value - 1
+//        return false;
+//    }
 
     @Override
     public void updatePromotion(PromotionDomain promotionDomain) {

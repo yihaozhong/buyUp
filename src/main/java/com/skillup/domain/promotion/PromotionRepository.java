@@ -10,7 +10,5 @@ public interface PromotionRepository {
 
     List<PromotionDomain> getPromotionByStatus(Integer status);
 
-    boolean lockStock(String id);
-
     void updatePromotion(PromotionDomain promotionDomain);
 }
