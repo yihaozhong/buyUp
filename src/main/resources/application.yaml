@@ -18,3 +18,7 @@ flyway:
 # customized config
 promotion:
   stock-strategy: optimistic
+
+order:
+  dataCenter: 1
+  machineNum: 1
