@@ -32,4 +32,14 @@ public class SyncStrategy implements StockOperation{
         }
 
     }
+
+    @Override
+    public boolean revertStock(String id) {
+        return false;
+    }
+
+    @Override
+    public boolean deductStock(String id) {
+        return false;
+    }
 }

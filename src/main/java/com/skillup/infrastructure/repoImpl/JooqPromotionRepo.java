@@ -85,9 +85,9 @@ public class JooqPromotionRepo implements PromotionRepository, StockOperation {
     public boolean lockStock(String id) {
 
         // update goods
-        // set stock = stock - 1 where id = 1 and stock > 0;
+        // set stock = stock - 1 where id = 1 and availbale stock > 0;
 
-        log.info("----- Optimistic Strategy -----");
+        log.info("----- Optimistic Strategy Lock Stock-----");
         int isLocked = dslContext.update(P_T)
                 .set(P_T.AVAILABLE_STOCK, P_T.AVAILABLE_STOCK.subtract(1))
                 .set(P_T.LOCK_STOCK, P_T.LOCK_STOCK.add(1))
@@ -95,5 +95,32 @@ public class JooqPromotionRepo implements PromotionRepository, StockOperation {
                 .execute();
         return isLocked == 1;
 
+    }
+
+    @Override
+    public boolean revertStock(String id) {
+        // update goods
+        // set stock = stock + 1 where id = promotion_id and lockstock > 0;
+
+        log.info("----- Optimistic Strategy Revert-----");
+        int isReversed = dslContext.update(P_T)
+                .set(P_T.AVAILABLE_STOCK, P_T.AVAILABLE_STOCK.add(1))
+                .set(P_T.LOCK_STOCK, P_T.LOCK_STOCK.subtract(1))
+                .where(P_T.PROMOTION_ID.eq(id).and(P_T.LOCK_STOCK.greaterThan(0L)))
+                .execute();
+        return isReversed == 1;
+    }
+
+    @Override
+    public boolean deductStock(String id) {
+        // update goods
+        // set stock = stock - 1 where id = 1 and lock stock > 0;
+
+        log.info("----- Optimistic Strategy Deduct Stock-----");
+        int isDeducted = dslContext.update(P_T)
+                .set(P_T.LOCK_STOCK, P_T.LOCK_STOCK.subtract(1))
+                .where(P_T.PROMOTION_ID.eq(id).and(P_T.AVAILABLE_STOCK.greaterThan(0L)))
+                .execute();
+        return isDeducted == 1;
     }
 }

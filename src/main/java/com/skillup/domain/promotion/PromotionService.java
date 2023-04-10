@@ -38,4 +38,12 @@ public class PromotionService {
     public boolean lockStock(String id){
         return stockOperation.lockStock(id);
     }
+
+    public boolean revertStock(String id){
+        return stockOperation.revertStock(id);
+    }
+
+    public boolean deductStock(String id){
+        return stockOperation.deductStock(id);
+    }
 }

@@ -55,6 +55,38 @@ public class PromotionController {
 
     }
 
+    @PostMapping("/revert/id/{id}")
+    public ResponseEntity<Boolean> revertPromotionStock(@PathVariable("id") String id){
+        // 1. check promotion exist
+        PromotionDomain promotionDomain = promotionService.getPromotionById(id);
+        if(Objects.isNull(promotionDomain)){
+            return ResponseEntity.status(SkillUpCommon.BAD_REQUEST).body(false);
+        }
+        // 2. try to lock stock
+        boolean isRevert = promotionService.revertStock(id);
+        if (isRevert){
+            return ResponseEntity.status(SkillUpCommon.SUCCESS).body(true);
+        }
+        return ResponseEntity.status(SkillUpCommon.SUCCESS).body(false);
+
+    }
+    @PostMapping("/deduct/id/{id}") // after payment, not longer lock
+    public ResponseEntity<Boolean> deductPromotionStock(@PathVariable("id") String id){
+        // 1. check promotion exist
+        PromotionDomain promotionDomain = promotionService.getPromotionById(id);
+        if(Objects.isNull(promotionDomain)){
+            return ResponseEntity.status(SkillUpCommon.BAD_REQUEST).body(false);
+        }
+        // 2. try to deduct stock
+        boolean isDeduct = promotionService.deductStock(id);
+        if (isDeduct){
+            return ResponseEntity.status(SkillUpCommon.SUCCESS).body(true);
+        }
+        return ResponseEntity.status(SkillUpCommon.SUCCESS).body(false);
+
+    }
+
+
     private PromotionDomain toDomain(PromotionInDto inDto){
         return PromotionDomain.builder()
         .promotionId(UUID.randomUUID().toString())
