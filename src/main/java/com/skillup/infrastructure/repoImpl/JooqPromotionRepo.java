@@ -2,16 +2,19 @@ package com.skillup.infrastructure.repoImpl;
 
 import com.skillup.domain.promotion.PromotionDomain;
 import com.skillup.domain.promotion.PromotionRepository;
+import com.skillup.domain.promotion.stockStrategy.StockOperation;
 import com.skillup.infrastructure.jooq.tables.Promotion;
 import com.skillup.infrastructure.jooq.tables.records.PromotionRecord;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public class JooqPromotionRepo implements PromotionRepository {
+@Repository(value = "optimistic")
+@Slf4j
+public class JooqPromotionRepo implements PromotionRepository, StockOperation {
 
     @Autowired
     DSLContext dslContext;
@@ -78,4 +81,19 @@ public class JooqPromotionRepo implements PromotionRepository {
                 .build();
     }
 
+    @Override
+    public boolean lockStock(String id) {
+
+        // update goods
+        // set stock = stock - 1 where id = 1 and stock > 0;
+
+        log.info("----- Optimistic Strategy -----");
+        int isLocked = dslContext.update(P_T)
+                .set(P_T.AVAILABLE_STOCK, P_T.AVAILABLE_STOCK.subtract(1))
+                .set(P_T.LOCK_STOCK, P_T.LOCK_STOCK.add(1))
+                .where(P_T.PROMOTION_ID.eq(id).and(P_T.AVAILABLE_STOCK.greaterThan(0L)))
+                .execute();
+        return isLocked == 1;
+
+    }
 }

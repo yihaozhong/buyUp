@@ -17,4 +17,4 @@ flyway:
 
 # customized config
 promotion:
-  stock-strategy: sync
+  stock-strategy: optimistic
