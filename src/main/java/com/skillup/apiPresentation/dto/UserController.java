@@ -7,7 +7,6 @@ import com.skillup.apiPresentation.util.SkillUpCommon;
 import com.skillup.apiPresentation.util.SkillUpResponse;
 import com.skillup.domain.user.UserDomain;
 import com.skillup.domain.user.UserService;
-import com.skillup.infrastructure.jooq.tables.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +14,30 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 import java.util.UUID;
 
+
+// 这一层为API层，是防腐层（对上下层分别处理使其隔离开），只是做数据的收发和转化。如果需要处理，调用一下真正处理的函数就好
+
+// userController在这里要实现多线程，每个用户进来都会开辟一个内存空间，UserDomain userDomain这样的引用就会放到stack上，生成
+// 的对象则放到heap上去。所以当线程做切换时，切的只是stack
 @RestController
 @RequestMapping("/account")
 public class UserController {
+    /*
+     在这里直接new的操作不好，需要避免，因为每当controller接收postMapping里的请求都要调用createUser的方法连接数据库，
+     那么每次都要new一个对象，而这个对象我们可能之后需要复用，需要它一直存在。但是因为每次都new，所以一旦时间久了用不到，就
+     会被JVM回收了，或者说回收了之后我们需要重新创建，这样就增加了开销。解决方法就是在UserService里加一个@Service，这样
+     spring就会自动帮我们生成一个唯一的对象（单例模式），调用的时候就加一个@Autowired，这样程序就会自动去@Service保存的
+     管理器找，能找到就说明生成过了，否则就是没有，这样避免了每次都new。
+     eg. UserService userService = new UserService();
+*/
+
     @Autowired
     UserService userService;
     @PostMapping("")
     public ResponseEntity<SkillUpResponse> createUser(@RequestBody UserInDto userInDto){
-
+        // insert data into user table
+        // domain没有数据库操作，具体的数据库操作是通过调用repository来完成
+        // 把inDto变成一个domain
         UserDomain userDomain;
         // insert data into data table
         try{
@@ -68,7 +83,7 @@ public class UserController {
                 SkillUpResponse.builder()
                         .result(toOutDto(userDomain)).build());
     }
-
+    // 决定逻辑放在哪里需要先考虑和返回值有没有关系，如果有关且不复杂，就直接放在这，不然如果包装到domain层，最终还是要传回来。
     @PostMapping("/login")
     public ResponseEntity<SkillUpResponse> login(@RequestBody UserInDto userInDto){
         // 1. get user by name, if fail , return 400
@@ -122,7 +137,7 @@ public class UserController {
                         .result(toOutDto(userDomain))
                         .build());
     }
-
+    // UserInDto和UserOutDto里的数据都是残缺的，只有domain中的才完整，所以这里要先转化为一个userDomain
     private UserDomain toDomain(UserInDto userInDto){
         return UserDomain.builder()
                 .userId(UUID.randomUUID().toString())

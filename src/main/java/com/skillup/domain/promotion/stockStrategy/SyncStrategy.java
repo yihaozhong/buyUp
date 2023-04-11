@@ -5,7 +5,7 @@ import com.skillup.domain.promotion.PromotionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+// synchronized方法保证每次只有一个ID能进入操作，它的访问结束后，下一个才能进来。不过这是一个比较粗糙的优化方法，性能不佳。
 @Service(value = "sync")
 @Slf4j
 public class SyncStrategy implements StockOperation{

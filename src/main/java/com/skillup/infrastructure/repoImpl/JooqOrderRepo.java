@@ -8,7 +8,8 @@ import com.skillup.infrastructure.jooq.tables.records.OrderRecord;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
+// @Repository的作用和@Service一样，都是生成一个object归spring管理，但是字面上能明确分工。
+// 比如repository就是连接数据库的，service和功能有关
 @Repository
 public class JooqOrderRepo implements OrderRepository {
     @Autowired

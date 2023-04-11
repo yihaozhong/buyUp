@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class OrderOutDto {
-    private Long orderNumber;
+    private String orderNumber;
 
     //订单状态 0:预订单 -1:库存不足订单，1:已创建等待付款, 2表示已付款, 3订单过期或者无效, -2 promotion innvalid
     private Integer orderStatus;
