@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class JooqPromotionRepo implements PromotionRepository, StockOperation {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public PromotionDomain getPromotionById(String id) {
         return dslContext.selectFrom(P_T).where(P_T.PROMOTION_ID.eq(id)).fetchOptional(this:: toDomain).orElse(null);
     }
@@ -82,6 +85,7 @@ public class JooqPromotionRepo implements PromotionRepository, StockOperation {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public boolean lockStock(String id) {
 
         // update goods
