@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 @RestController
@@ -33,7 +34,7 @@ public class OrderController {
     // 没必要放下一层的才放到这里，因为最终要return到API层
     // validate input这一步可以提前做校验，然后拦截，在前端表示出来
     @PostMapping
-    public ResponseEntity<OrderOutDto> createByNowOrder(@RequestBody OrderInDto orderInDto) {
+    public ResponseEntity<OrderOutDto> createByNowOrder(@Valid @RequestBody OrderInDto orderInDto) {
         OrderDomain orderDomain = orderApplication.createByNowOrder(toDomain(orderInDto));
         return ResponseEntity.status(SkillUpCommon.SUCCESS).body(toOrderOutDto(orderDomain));
     }
