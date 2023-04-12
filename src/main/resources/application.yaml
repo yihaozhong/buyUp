@@ -1,2 +1,24 @@
 server:
-  port: 8070
+  port: 8090
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/skillup?serverTimezone=GMT&useUnicode=true&characterEncoding=utf8&useSSL=true
+    username: root
+    password: rootroot
+
+  flyway:
+    baseline-on-migrate: false
+    enabled: true
+    ignore-migration-patterns:
+      - "*:missing"
+    outOfOrder: true
+
+# customized config
+promotion:
+  stock-strategy: optimistic
+
+order:
+  dataCenter: 1
+  machineNum: 1
