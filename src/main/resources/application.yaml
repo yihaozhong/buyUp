@@ -13,7 +13,6 @@ spring:
     enabled: true
     ignore-migration-patterns:
       - "*:missing"
-    outOfOrder: true
 
 # customized config
 promotion:
