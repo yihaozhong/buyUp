@@ -1,9 +1,9 @@
 package com.skillup.domain.stock;
 
 public interface StockRepository {
-    boolean lockStock(StockDomain stockDomain);
+    boolean lockAvailableStock(StockDomain stockDomain);
 
-    boolean revertStock(StockDomain stockDomain);
+    boolean revertAvailableStock(StockDomain stockDomain);
 
     Long getPromotionAvailableStock(String promotionId);
 
