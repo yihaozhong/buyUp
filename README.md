@@ -1,4 +1,4 @@
-# README TO BE REPLACE#
+# Buy Up
  
 This README would normally document whatever steps are necessary to get your application up and running.
 
