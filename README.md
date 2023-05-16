@@ -19,7 +19,4 @@ This README is still in construction.
 
 ### Contribution guidelines ###
 
-* Writing tests
-* Code review
-* Other guidelines
 
