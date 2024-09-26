@@ -4,6 +4,7 @@ import com.skillup.apiPresentation.dto.in.PromotionInDto;
 import com.skillup.apiPresentation.dto.mapper.PromotionMapper;
 import com.skillup.apiPresentation.dto.out.PromotionOutDto;
 import com.skillup.apiPresentation.util.SkillUpCommon;
+import com.skillup.application.promotion.PromotionApplication;
 import com.skillup.domain.promotion.PromotionDomain;
 import com.skillup.domain.promotion.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ import java.util.stream.Collectors;
 public class PromotionController {
     @Autowired
     PromotionService promotionService;
+
+    @Autowired
+    PromotionApplication promotionApplication;
+
     @PostMapping("")
     public PromotionOutDto createPromotion(@RequestBody PromotionInDto promotionInDto){
         PromotionDomain promotionDomain = promotionService.createPromotion(PromotionMapper.INSTANCE.toDomain(promotionInDto));
@@ -26,11 +31,22 @@ public class PromotionController {
     }
     @GetMapping("/id/{id}")
     public ResponseEntity<PromotionOutDto> getPromotionById(@PathVariable("id") String id){
-        PromotionDomain promotionDomain = promotionService.getPromotionById(id);
+        //1. get promotion cache domain
+
+        //2. get stock cache
+
+        //3. update stock onto available stock
+
+        PromotionDomain promotionDomain = promotionApplication.getById(id);
         if(Objects.isNull(promotionDomain)){
             return ResponseEntity.status(SkillUpCommon.INTERNAL_ERROR).body(null);
         }
         return ResponseEntity.status(SkillUpCommon.SUCCESS).body(PromotionMapper.INSTANCE.toOutDto(promotionDomain));
+//        PromotionDomain promotionDomain = promotionService.getPromotionById(id);
+//        if(Objects.isNull(promotionDomain)){
+//            return ResponseEntity.status(SkillUpCommon.INTERNAL_ERROR).body(null);
+//        }
+//        return ResponseEntity.status(SkillUpCommon.SUCCESS).body(PromotionMapper.INSTANCE.toOutDto(promotionDomain));
     }
 
     @GetMapping("/status/{status}")
